@@ -94,6 +94,12 @@
       <version>${woodstox.version}</version>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.codehaus.woodstox</groupId>
+      <artifactId>stax2-api</artifactId>
+      <version>${stax2-api.version}</version>
+      <optional>true</optional>
+    </dependency>
     <!-- Required for console color support in Windows -->
     <dependency>
       <groupId>org.fusesource.jansi</groupId>
