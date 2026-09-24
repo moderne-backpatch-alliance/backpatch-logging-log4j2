@@ -1,0 +1,17 @@
+schema: osera-patch-evidence/0.1.0
+producer: moderne
+release: 2.17.2.1-backpatch-00001
+baseline: v2.17.2+backpatch.baseline
+fixes:
+  - cve: CVE-2026-34480
+    upstream: https://nvd.nist.gov/vuln/detail/CVE-2026-34480
+    artifacts:
+      - org.apache.logging.log4j:log4j-core
+    note: New in this release; ported onto 2.17.2; fixed at 2.17.2.1-backpatch-00001 (backpatch-logging-log4j2@535753d).
+tests:
+  commit: 535753df306e9771d77c0de30b408ab73ca5c522
+  command: mvn -B -q -pl log4j-core -am test -Dtest=XmlLayoutSanitizationTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false
+  runtime: OpenJDK 1.8.0_372 (Zulu), Apache Maven 3.9.14
+  report: log4j-core-2.17.2.1-backpatch-00001-tests.zip
+  result: pass
+  note: the regression tests the fix commits touched, 10 test(s) run, 0 failed, at the tested commit
