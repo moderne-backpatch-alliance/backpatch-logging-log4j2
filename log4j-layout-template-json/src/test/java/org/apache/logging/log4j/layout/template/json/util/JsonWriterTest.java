@@ -27,6 +27,8 @@ import org.apache.logging.log4j.util.Strings;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -793,6 +795,14 @@ class JsonWriterTest {
         }
     }
 
+    @ParameterizedTest
+    @ValueSource(floats = {Float.NEGATIVE_INFINITY, Float.NaN, Float.POSITIVE_INFINITY})
+    void test_writeNumber_float_non_finite(final float number) {
+        final String expectedJson = "\"" + number + "\"";
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeNumber(number)));
+        Assertions.assertThat(actualJson).isEqualTo(expectedJson);
+    }
+
     @Test
     void test_writeNumber_float() {
         for (final float number : new float[]{Float.MIN_VALUE, -1.0F, 0F, 1.0F, Float.MAX_VALUE}) {
@@ -801,6 +811,14 @@ class JsonWriterTest {
                     writer.use(() -> writer.writeNumber(number)));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
         }
+    }
+
+    @ParameterizedTest
+    @ValueSource(doubles = {Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY})
+    void test_writeNumber_double_non_finite(final double number) {
+        final String expectedJson = "\"" + number + "\"";
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeNumber(number)));
+        Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
