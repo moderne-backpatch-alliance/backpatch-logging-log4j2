@@ -1,17 +1,22 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 2.17.2.1-backpatch-00001
+release: 2.17.2.1-backpatch-00002
 baseline: v2.17.2+backpatch.baseline
 fixes:
   - cve: CVE-2026-34480
     upstream: https://nvd.nist.gov/vuln/detail/CVE-2026-34480
     artifacts:
       - org.apache.logging.log4j:log4j-core
-    note: New in this release; ported onto 2.17.2; fixed at 2.17.2.1-backpatch-00001 (backpatch-logging-log4j2@535753d).
+    note: Carried from 2.17.2.1-backpatch-00001; ported onto 2.17.2; fixed at 2.17.2.1-backpatch-00001 (backpatch-logging-log4j2@535753d).
+  - cve: CVE-2026-34479
+    upstream: https://nvd.nist.gov/vuln/detail/CVE-2026-34479
+    artifacts:
+      - org.apache.logging.log4j:log4j-core
+    note: New in this release; ported onto 2.17.2; fixed at 2.17.2.1-backpatch-00002 (backpatch-logging-log4j2@f0cb714).
 tests:
-  commit: 535753df306e9771d77c0de30b408ab73ca5c522
-  command: mvn -B -q -pl log4j-core -am test -Dtest=XmlLayoutSanitizationTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false
-  runtime: OpenJDK 1.8.0_372 (Zulu), Apache Maven 3.9.14
-  report: log4j-core-2.17.2.1-backpatch-00001-tests.zip
+  commit: f0cb714074464cd77e5907d3982d342299494b22
+  command: mvn -B -q -t toolchains-log4j.xml -pl log4j-core,log4j-1.2-api -am test -Dtest=TransformTest,Log4j1XmlLayoutTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false
+  runtime: OpenJDK 1.8.0_382 (Zulu), Apache Maven 3.9.16, JDK 11.0.20 (Zulu) toolchain for the Java 9 modules
+  report: log4j-core-2.17.2.1-backpatch-00002-tests.zip
   result: pass
-  note: the regression tests the fix commits touched, 10 test(s) run, 0 failed, at the tested commit
+  note: the regression tests the fix commits touched, 25 test(s) run, 0 failed, at the tested commit
