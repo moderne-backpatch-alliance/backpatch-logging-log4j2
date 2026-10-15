@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 2.17.2.1-backpatch-00003
+release: 2.17.2.1-backpatch-00004
 baseline: v2.17.2+backpatch.baseline
 fixes:
   - cve: CVE-2026-34480
@@ -17,11 +17,17 @@ fixes:
     upstream: https://nvd.nist.gov/vuln/detail/CVE-2026-34481
     artifacts:
       - org.apache.logging.log4j:log4j-layout-template-json
-    note: New in this release; ported onto 2.17.2; fixed at 2.17.2.1-backpatch-00003 (backpatch-logging-log4j2@cb1ef49).
+    note: Carried from 2.17.2.1-backpatch-00003; ported onto 2.17.2; fixed at 2.17.2.1-backpatch-00003 (backpatch-logging-log4j2@cb1ef49).
+  - cve: GHSA-h383-gmxw-35v2
+    upstream: https://github.com/advisories/GHSA-h383-gmxw-35v2
+    artifacts:
+      - org.apache.logging.log4j:log4j-core
+    note: New in this release; ported onto 2.17.2; fixed at 2.17.2.1-backpatch-00004 (backpatch-logging-log4j2@f0cb714..faa7549). The advisory for CVE-2026-34479, whose fix f0cb714 shipped in 2.17.2.1-backpatch-00002; faa7549 changes only the license header of its test TransformTest.java to the one its neighbours carry.
 tests:
-  commit: cb1ef496611ff7c7f065cbf369b839c500e956ff
-  command: mvn -B -q -t toolchains-log4j.xml -pl log4j-layout-template-json -am test -Dtest=JsonWriterTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false
+  commit: faa7549199b5b267f5e80c0d02f62e71765e8b9b
+  command: mvn -B -q -t toolchains-log4j.xml -pl log4j-core,log4j-1.2-api -am test -Dtest=TransformTest,Log4j1XmlLayoutTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false
   runtime: OpenJDK 1.8.0_382 (Zulu), Apache Maven 3.9.16, JDK 11.0.20 (Zulu) toolchain for the Java 9 modules
-  report: log4j-layout-template-json-2.17.2.1-backpatch-00003-tests.zip
+  report: log4j-core-2.17.2.1-backpatch-00004-tests.zip
+  report_sha256: e853751c1f287921474b5d12dbfe0753e2e040da4e484656559da3960646c92d
   result: pass
-  note: the regression tests the fix commits touched, 86 test(s) run, 0 failed, at the tested commit
+  note: the regression tests of the CVE-2026-34479 fix, whose test file this release changes, 25 test(s) run, 0 failed, at the tested commit
