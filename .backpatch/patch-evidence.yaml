@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 2.24.3.1-backpatch-00002
+release: 2.24.3.1-backpatch-00003
 baseline: v2.24.3+backpatch.baseline
 fixes:
   - cve: CVE-2026-34480
@@ -19,11 +19,19 @@ fixes:
     artifacts:
       - org.apache.logging.log4j:log4j-core
     note: New in 2.24.3.1-backpatch-00002 (backpatch-logging-log4j2@678de66).
+  - cve: CVE-2026-49844
+    upstream_fix_url: https://github.com/apache/logging-log4j2/commit/feadf8eb0b4acb6ddfa4c0ab2bbc6d88b8e12d82
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-49844
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-logging-log4j2/commit/328775e
+    basis: adapted
+    artifacts:
+      - org.apache.logging.log4j:log4j-api
+    note: New in 2.24.3.1-backpatch-00003 (backpatch-logging-log4j2@328775e).
 tests:
-  commit: 678de661ce25ddfdf4c76c824e3c85baf4a72880
-  command: JAVA_HOME=<jdk-17> mvn -B -pl log4j-api-java9,log4j-core-java9,log4j-core-test -am -Dtest=XmlLayoutJUnit5Test,Rfc5424LayoutTest -Dsurefire.failIfNoSpecifiedTests=false -DfailIfNoTests=false clean test
+  commit: 328775e89ad41856cce750f00261ba696403ad22
+  command: JAVA_HOME=<jdk-17> mvn -B -pl log4j-api-java9,log4j-core-java9,log4j-core-test -am -Dtest=XmlLayoutJUnit5Test,Rfc5424LayoutTest,MapMessageTest -Dsurefire.failIfNoSpecifiedTests=false -DfailIfNoTests=false clean test
   runtime: Azul Zulu (Java 17.0.8.1), Apache Maven 3.9.16, macOS aarch64
-  report: log4j-core-2.24.3.1-backpatch-00002-tests.zip
-  report_sha256: 7b576392bb525fb772421d8ea5c6705ef328013325f9594f6d55981b21942843
+  report: log4j-api-2.24.3.1-backpatch-00003-tests.zip
+  report_sha256: f7e28fa03d31323223036b707881b698ac61fb6565dd06d51112f6ab2e0acad3
   result: pass
-  note: "the regression tests of the 2 fix(es) this release carries (XmlLayoutJUnit5Test, Rfc5424LayoutTest), 39 run, 0 failed; the full suite of the same modules at the same tree: 3181 run, 162 failed, each of which also fails at the baseline on this machine; both ran at 420effb73bb4, the same tree as this commit apart from .backpatch/patch-evidence.yaml"
+  note: "the regression tests of the 3 fix(es) this release carries (XmlLayoutJUnit5Test, Rfc5424LayoutTest, MapMessageTest), 70 run, 0 failed; the full suite of the same modules at the same tree: 3188 run, 162 failed, each of which also fails at the baseline on this machine; both ran at 57808b681f85, the same tree as this commit apart from .backpatch/patch-evidence.yaml"
