@@ -1,0 +1,21 @@
+schema: osera-patch-evidence/0.1.0
+producer: moderne
+release: 2.24.3.1-backpatch-00001
+baseline: v2.24.3+backpatch.baseline
+fixes:
+  - cve: CVE-2026-34480
+    upstream_fix_url: https://github.com/apache/logging-log4j2/commit/4f5014229825d8be977662e0743205bb8a67f989
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-34480
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-logging-log4j2/commit/4c99556
+    basis: backport
+    artifacts:
+      - org.apache.logging.log4j:log4j-core
+    note: New in 2.24.3.1-backpatch-00001 (backpatch-logging-log4j2@4c99556).
+tests:
+  commit: 4c995560f86595e44cde7371b5cbea79ecfb6aa4
+  command: JAVA_HOME=<jdk-17> mvn -B -pl log4j-api-java9,log4j-core-java9,log4j-core-test -am -Dtest=XmlLayoutJUnit5Test -Dsurefire.failIfNoSpecifiedTests=false -DfailIfNoTests=false clean test
+  runtime: Azul Zulu (Java 17.0.8.1), Apache Maven 3.9.16, macOS aarch64
+  report: log4j-core-2.24.3.1-backpatch-00001-tests.zip
+  report_sha256: b25208c92a137cfdefe34ab129a3906bbcb5faffa77efebddbf366177b5c8d9c
+  result: pass
+  note: "the regression tests of the 1 fix(es) this release carries (XmlLayoutJUnit5Test), 10 run, 0 failed; the full suite of the same modules at the same tree: 3172 run, 162 failed, each of which also fails at the baseline on this machine"
