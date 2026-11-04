@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 2.24.3.1-backpatch-00005
+release: 2.24.3.1-backpatch-00006
 baseline: v2.24.3+backpatch.baseline
 fixes:
   - cve: CVE-2026-34480
@@ -10,7 +10,7 @@ fixes:
     basis: backport
     artifacts:
       - org.apache.logging.log4j:log4j-core
-    note: New in 2.24.3.1-backpatch-00001 (backpatch-logging-log4j2@4c99556).
+    note: Carried from 2.24.3.1-backpatch-00001; ported onto 2.24.3; fixed at 2.24.3.1-backpatch-00001 (backpatch-logging-log4j2@4c99556).
   - cve: CVE-2026-34478
     upstream_fix_url: https://github.com/apache/logging-log4j2/commit/6c8cf594fe853e4cf8d5180d247f8b7bc910696d
     advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-34478
@@ -18,7 +18,7 @@ fixes:
     basis: backport
     artifacts:
       - org.apache.logging.log4j:log4j-core
-    note: New in 2.24.3.1-backpatch-00002 (backpatch-logging-log4j2@678de66).
+    note: Carried from 2.24.3.1-backpatch-00002; ported onto 2.24.3; fixed at 2.24.3.1-backpatch-00002 (backpatch-logging-log4j2@678de66).
   - cve: CVE-2026-49844
     upstream_fix_url: https://github.com/apache/logging-log4j2/commit/feadf8eb0b4acb6ddfa4c0ab2bbc6d88b8e12d82
     advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-49844
@@ -26,7 +26,7 @@ fixes:
     basis: adapted
     artifacts:
       - org.apache.logging.log4j:log4j-api
-    note: New in 2.24.3.1-backpatch-00003 (backpatch-logging-log4j2@328775e).
+    note: Carried from 2.24.3.1-backpatch-00003; ported onto 2.24.3; fixed at 2.24.3.1-backpatch-00003 (backpatch-logging-log4j2@328775e).
   - cve: CVE-2025-68161
     upstream_fix_url: https://github.com/apache/logging-log4j2/commit/5350d1054cd85d8089c90fb2c107fcf1e1c935c5
     advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2025-68161
@@ -34,7 +34,7 @@ fixes:
     basis: adapted
     artifacts:
       - org.apache.logging.log4j:log4j-core
-    note: New in 2.24.3.1-backpatch-00004 (backpatch-logging-log4j2@1b083e8).
+    note: Carried from 2.24.3.1-backpatch-00004; ported onto 2.24.3; fixed at 2.24.3.1-backpatch-00004 (backpatch-logging-log4j2@1b083e8).
   - cve: CVE-2026-34477
     upstream_fix_url: https://github.com/apache/logging-log4j2/commit/3b1e54c1784e8e456233caf2eafead9e40848f3e
     advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-34477
@@ -42,12 +42,11 @@ fixes:
     basis: adapted
     artifacts:
       - org.apache.logging.log4j:log4j-core
-    note: New in 2.24.3.1-backpatch-00005 (backpatch-logging-log4j2@9f125ab..ac3c4a6).
+    note: Carried from 2.24.3.1-backpatch-00005; ported onto 2.24.3; fixed at 2.24.3.1-backpatch-00005 (backpatch-logging-log4j2@9f125ab..ac3c4a6).
 tests:
-  commit: ac3c4a660b1a49671720c0078b1493027d422055
-  command: JAVA_HOME=<jdk-17> mvn -B -pl log4j-api-java9,log4j-core-java9,log4j-core-test -am -Dtest=XmlLayoutJUnit5Test,Rfc5424LayoutTest,MapMessageTest,SslSocketManagerTest,SslConfigurationTest -Dsurefire.failIfNoSpecifiedTests=false -DfailIfNoTests=false clean test
-  runtime: Azul Zulu (Java 17.0.8.1), Apache Maven 3.9.16, macOS aarch64
-  report: log4j-core-2.24.3.1-backpatch-00005-tests.zip
-  report_sha256: 74af862dccdc35ce84dea85b5412e56e6c5f8a455f0ddd240f6a931c69ccc100
+  commit: 172300996d12ff8a974659f256ab977fb1cfeea7
+  command: none in this repository
+  runtime: none, no build or test ran for this release
+  report: carried, see the evidence of the release named in the note
   result: pass
-  note: "the regression tests of the 5 fix(es) this release carries (XmlLayoutJUnit5Test, Rfc5424LayoutTest, MapMessageTest, SslSocketManagerTest, SslConfigurationTest), 82 run, 0 failed; the full suite of the same modules at the same tree: 3192 run, 162 failed, each of which also fails at the baseline on this machine; both ran at 4cc4dff10b9c, the same tree as this commit apart from .backpatch/patch-evidence.yaml"
+  note: "this release is a tooling update, it carries no new fix, nothing ran here; its test provenance is tooling-2026-11-03-log4j2-2.24: a tooling update of moderne-backpatch-alliance/backpatch-logging-log4j2 at v2.24.3.1-backpatch-00005, whose .backpatch/patch-evidence.yaml says what ran"
