@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 2.24.3.1-backpatch-00006
+release: 2.24.3.1-backpatch-00007
 baseline: v2.24.3+backpatch.baseline
 fixes:
   - cve: CVE-2026-34480
@@ -43,10 +43,19 @@ fixes:
     artifacts:
       - org.apache.logging.log4j:log4j-core
     note: Carried from 2.24.3.1-backpatch-00005; ported onto 2.24.3; fixed at 2.24.3.1-backpatch-00005 (backpatch-logging-log4j2@9f125ab..ac3c4a6).
+  - cve: CVE-2026-34479
+    upstream_fix_url: https://github.com/apache/logging-log4j2/commit/25043cfad1bac2e43ebc4638450cbb73c51451c4
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-34479
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-logging-log4j2/commit/0612a96
+    basis: adapted
+    artifacts:
+      - org.apache.logging.log4j:log4j-core
+    note: New in this release; ported onto 2.24.3; fixed at 2.24.3.1-backpatch-00007 (backpatch-logging-log4j2@0612a96).
 tests:
-  commit: 172300996d12ff8a974659f256ab977fb1cfeea7
-  command: none in this repository
-  runtime: none, no build or test ran for this release
-  report: carried, see the evidence of the release named in the note
+  commit: 0612a96c27d421288d5e6bf2f15cf7211d83d0fe
+  command: "mvn -B -T1 -t <JDK 8 toolchains file> -Pjava8-tests,!java8-incompat-fixes -Dsite-logback.version=1.5.6 -Dossindex.skip=true -pl :log4j-api-java9,:log4j-core-java9,:log4j-core-test,:log4j-1.2-api -am -Dmaven.test.failure.ignore=true clean package"
+  runtime: "Maven runs on OpenJDK 17.0.16; tests run on the JDK 8 toolchain, 1.8.0_382, except the Java 9 modules; Apache Maven 3.9.16"
+  report: log4j-core-2.24.3.1-backpatch-00007-tests.zip
+  report_sha256: 13753c98d28fc485ec25a87bcfb75a8ce14a86d655bb49143592c1bc09be2adf
   result: pass
-  note: "this release is a tooling update, it carries no new fix, nothing ran here; its test provenance is tooling-2026-11-03-log4j2-2.24: a tooling update of moderne-backpatch-alliance/backpatch-logging-log4j2 at v2.24.3.1-backpatch-00005, whose .backpatch/patch-evidence.yaml says what ran"
+  note: 3617 tests at the patch commit, 40 of them skipped by the suite, 0 failed, 0 errors.
