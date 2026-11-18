@@ -22,8 +22,11 @@ import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Collections;
 import java.util.List;
 
+import javax.net.ssl.SNIHostName;
+import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
@@ -136,10 +139,7 @@ public class SslSocketManager extends TcpSocketManager {
 
     @Override
     protected Socket createSocket(final InetSocketAddress socketAddress) throws IOException {
-        final SSLSocketFactory socketFactory = createSslSocketFactory(sslConfig);
-        final Socket newSocket = socketFactory.createSocket();
-        newSocket.connect(socketAddress, getConnectTimeoutMillis());
-        return newSocket;
+        return createSocket(getHost(), socketAddress, getConnectTimeoutMillis(), sslConfig, getSocketOptions());
     }
 
     private static SSLSocketFactory createSslSocketFactory(final SslConfiguration sslConf) {
@@ -171,29 +171,57 @@ public class SslSocketManager extends TcpSocketManager {
             IOException ioe = null;
             for (InetSocketAddress socketAddress : socketAddresses) {
                 try {
-                    return SslSocketManager.createSocket(socketAddress, data.connectTimeoutMillis,
+                    return SslSocketManager.createSocket(data.host, socketAddress, data.connectTimeoutMillis,
                             data.sslConfiguration, data.socketOptions);
                 } catch (IOException ex) {
-                    ioe = ex;
+                    final String message = String.format(
+                            "failed create a socket to `%s:%s` that is resolved to address `%s`",
+                            data.host, data.port, socketAddress);
+                    final IOException newEx = new IOException(message, ex);
+                    if (ioe == null) {
+                        ioe = newEx;
+                    } else {
+                        ioe.addSuppressed(newEx);
+                    }
                 }
             }
             throw new IOException(errorMessage(data, socketAddresses) , ioe);
         }
     }
 
-    static Socket createSocket(final InetSocketAddress socketAddress, final int connectTimeoutMillis,
-            final SslConfiguration sslConfiguration, final SocketOptions socketOptions) throws IOException {
+    private static Socket createSocket(final String hostName, final InetSocketAddress socketAddress,
+            final int connectTimeoutMillis, final SslConfiguration sslConfiguration,
+            final SocketOptions socketOptions) throws IOException {
         final SSLSocketFactory socketFactory = createSslSocketFactory(sslConfiguration);
         final SSLSocket socket = (SSLSocket) socketFactory.createSocket();
         if (socketOptions != null) {
-            // Not sure which options must be applied before or after the connect() call.
             socketOptions.apply(socket);
         }
         socket.connect(socketAddress, connectTimeoutMillis);
-        if (socketOptions != null) {
-            // Not sure which options must be applied before or after the connect() call.
-            socketOptions.apply(socket);
+        if (sslConfiguration.isVerifyHostName()) {
+            final SSLParameters sslParameters = socket.getSSLParameters();
+            sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
+            final SNIHostName serverName = createSniHostName(hostName);
+            if (serverName != null) {
+                sslParameters.setServerNames(Collections.singletonList(serverName));
+            }
+            socket.setSSLParameters(sslParameters);
         }
+        // Handshake now, so a verification failure surfaces here instead of on a later write
+        socket.startHandshake();
         return socket;
+    }
+
+    static SNIHostName createSniHostName(final String hostName) {
+        // RFC 6066 forbids IP literals in SNI. The regex drops IPv4 literals; SNIHostName's
+        // constructor rejects IPv6 literals and invalid host names.
+        if (!hostName.matches("\\d+[.]\\d+[.]\\d+[.]\\d+")) {
+            try {
+                return new SNIHostName(hostName);
+            } catch (final IllegalArgumentException ignored) {
+                // Not a valid host name: connect without SNI
+            }
+        }
+        return null;
     }
 }
