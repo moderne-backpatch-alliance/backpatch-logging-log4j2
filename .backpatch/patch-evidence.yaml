@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 2.17.2.1-backpatch-00008
+release: 2.17.2.1-backpatch-00009
 baseline: v2.17.2+backpatch.baseline
 fixes:
   - cve: CVE-2026-34480
@@ -50,12 +50,20 @@ fixes:
     basis: adapted
     artifacts:
       - org.apache.logging.log4j:log4j-core
-    note: New in this release; ported onto 2.17.2; fixed at 2.17.2.1-backpatch-00008 (backpatch-logging-log4j2@a8563db). A Socket or Syslog appender with `protocol="SSL"` and no `<Ssl>` element now fails to connect with a `NullPointerException` from `SslSocketManager`, as upstream does (apache/logging-log4j2 issue 4026). Such an appender relied on the JVM's default SSL context, for example through `javax.net.ssl.trustStore`. If you configure one, add an `<Ssl>` element with your key store and trust store.
+    note: Carried from 2.17.2.1-backpatch-00008; ported onto 2.17.2; fixed at 2.17.2.1-backpatch-00008 (backpatch-logging-log4j2@a8563db). A Socket or Syslog appender with `protocol="SSL"` and no `<Ssl>` element now fails to connect with a `NullPointerException` from `SslSocketManager`, as upstream does (apache/logging-log4j2 issue 4026). Such an appender relied on the JVM's default SSL context, for example through `javax.net.ssl.trustStore`. If you configure one, add an `<Ssl>` element with your key store and trust store.
+  - cve: CVE-2026-34477
+    upstream_fix_url: https://github.com/apache/logging-log4j2/commit/3b1e54c1784e8e456233caf2eafead9e40848f3e
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-34477
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-logging-log4j2/commit/be78b4f
+    basis: adapted
+    artifacts:
+      - org.apache.logging.log4j:log4j-core
+    note: New in this release; ported onto 2.17.2; fixed at 2.17.2.1-backpatch-00009 (backpatch-logging-log4j2@be78b4f).
 tests:
-  commit: a8563dba79391676f0e1d6d363c0a96fd8ab934a
+  commit: be78b4f65698c0547fe29481e628a5e5921961e8
   command: mvn -B -T1 -t -pl log4j-api-java9,log4j-api,log4j-core-java9,log4j-core -am -Dossindex.skip=true -Dmaven.test.failure.ignore=true clean package
   runtime: openjdk version 1.8.0_382, Apache Maven 3.9.16
-  report: log4j-core-2.17.2.1-backpatch-00008-tests.zip
-  report_sha256: eb29a465f88342065765ba856f86665a4f156bcb530c631df5f1edf234009294
+  report: log4j-core-2.17.2.1-backpatch-00009-tests.zip
+  report_sha256: 7de6de3b08f92e0369ed23c92e8715b95413bf81c9d7e7222dee7e52c0e05347
   result: pass
-  note: 3053 tests at the patch commit, 16 of them skipped by the suite, 0 failed, 0 errors.
+  note: 3054 tests at the patch commit, 16 of them skipped by the suite, 0 failed, 0 errors.
