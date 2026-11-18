@@ -251,13 +251,13 @@ enum MapMessageJsonFormatter {;
     private static void formatNumber(final StringBuilder sb, final Number number) {
         if (number instanceof BigDecimal) {
             final BigDecimal decimalNumber = (BigDecimal) number;
-            sb.append(decimalNumber.toString());
+            sb.append(decimalNumber);
         } else if (number instanceof Double) {
             final double doubleNumber = (Double) number;
-            sb.append(doubleNumber);
+            formatDouble(sb, doubleNumber);
         } else if (number instanceof Float) {
             final float floatNumber = (float) number;
-            sb.append(floatNumber);
+            formatFloat(sb, floatNumber);
         } else if (number instanceof Byte ||
                 number instanceof Short ||
                 number instanceof Integer ||
@@ -270,8 +270,26 @@ enum MapMessageJsonFormatter {;
             if (Double.compare(longNumber, doubleValue) == 0) {
                 sb.append(longNumber);
             } else {
-                sb.append(doubleValue);
+                formatDouble(sb, doubleValue);
             }
+        }
+    }
+
+    private static void formatDouble(StringBuilder sb, double doubleNumber) {
+        // Follows the same logic as Jackson's JsonWriteFeature#WRITE_NAN_AS_STRINGS feature.
+        if (!Double.isFinite(doubleNumber)) {
+            formatString(sb, Double.toString(doubleNumber));
+        } else {
+            sb.append(doubleNumber);
+        }
+    }
+
+    private static void formatFloat(StringBuilder sb, float floatNumber) {
+        // Follows the same logic as Jackson's JsonWriteFeature#WRITE_NAN_AS_STRINGS feature.
+        if (!Float.isFinite(floatNumber)) {
+            formatString(sb, Float.toString(floatNumber));
+        } else {
+            sb.append(floatNumber);
         }
     }
 
@@ -372,7 +390,7 @@ enum MapMessageJsonFormatter {;
                 sb.append(COMMA);
             }
             final float item = items[itemIndex];
-            sb.append(item);
+            formatFloat(sb, item);
         }
         sb.append(RBRACE);
     }
@@ -386,7 +404,7 @@ enum MapMessageJsonFormatter {;
                 sb.append(COMMA);
             }
             final double item = items[itemIndex];
-            sb.append(item);
+            formatDouble(sb, item);
         }
         sb.append(RBRACE);
     }
