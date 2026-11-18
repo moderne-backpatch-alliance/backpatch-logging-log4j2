@@ -23,6 +23,11 @@ import java.net.UnknownHostException;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
+import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
+import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -133,5 +138,20 @@ public class SslConfigurationTest {
         final SslConfiguration sslConf = SslConfiguration.createSSLConfiguration(null, ksc, null);
         final SSLSocketFactory factory = sslConf.getSslSocketFactory();
         assertNotNull(factory);
+    }
+
+    @Test
+    public void verifyHostNameFromXml() {
+        PluginManager pluginManager = new PluginManager(Node.CATEGORY);
+        pluginManager.collectPlugins();
+        PluginType<?> pluginType = pluginManager.getPluginType("Ssl");
+        assertNotNull(pluginType);
+        Node ssl = new Node(null, pluginType.getElementName(), pluginType);
+        ssl.getAttributes().put("verifyHostName", "true");
+        PluginBuilder builder = new PluginBuilder(pluginType);
+        SslConfiguration sslConfiguration = (SslConfiguration) builder.withConfigurationNode(ssl)
+                .withConfiguration(new DefaultConfiguration())
+                .build();
+        assertTrue(sslConfiguration.isVerifyHostName());
     }
 }
